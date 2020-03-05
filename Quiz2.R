@@ -24,17 +24,17 @@ print(apply(zz[,-3], 1, function(x){ sum(x) }))
 mylist=list(sex = c(1,1,1,1,2,2,2,2,2,2), smoking = c(1,0,1,0,1,0,1,0,1,1), age=c(21:30));
 
 # x = lapply(mylist, max); print(x); y = sapply(mylist, min); print(y)
-x = lapply(mylist, max); 
-print(x); 
-y = sapply(mylist, min); 
+x = lapply(mylist, max);
+print(x);
+y = sapply(mylist, min);
 print(y)
 
 # z = mapply(function(p1,p2,p3){c(p1,p2,p3)}, mylist$sex, mylist[[2]], mylist[['age']]); print(z)
-z = mapply(function(p1,p2,p3){c(p1,p2,p3)}, mylist$sex, mylist[[2]], mylist[['age']]); 
+z = mapply(function(p1,p2,p3){c(p1,p2,p3)}, mylist$sex, mylist[[2]], mylist[['age']]);
 print(z)
 
 # class(x); class(y); class(z)
-print(class(x)); 
+print(class(x));
 print(class(y));
 print(class(z));
 
@@ -95,8 +95,6 @@ phones <- c("+1 (123) 904 6517", "(212) 323 2218", " 2197338965",
             "233.398.9187 ", "482 952 3315", "Work: 579-499-7527", 
             "Home: 543.355.3679")
 
-# (^ |^[\(]?\d\d\d[\)]?|^(\+1 [\(]?\d\d\d[\)]?)|: (.?\d\d\d))(\.|-| |)([\(]?\d\d\d[\)]?)(\.|-| |)(\d\d\d\d)
+# (\+1 |[0-9]+|[\(][0-9]*[\)])([\(][0-9]*[\)]| [0-9]*|-[0-9]* |.[0-9]*)*
 
-print(str_detect(phones, 
-                 "(^ |^[\\(]?\\d\\d\\d[\\)]?|^(\\+1 [\\(]?\\d\\d\\d[\\)]?)|: 
-                 (.?\\d\\d\\d))(\\.|-| |)([\\(]?\\d\\d\\d[\\)]?)(\\.|-| |)(\\d\\d\\d\\d)"))
+print(str_extract(phones,"(\\+1 |[0-9]+|[\\(][0-9]*[\\)])([\\(][0-9]*[\\)]| [0-9]*|-[0-9]* |.[0-9]*)*"))
