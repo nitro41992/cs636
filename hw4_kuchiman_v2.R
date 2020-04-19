@@ -4,6 +4,7 @@ library(caret)
 library(pROC)
 
 split_number = 0.5
+folds = 5
 
 # Load data
 train = fread('train.csv')
@@ -18,6 +19,8 @@ merged_data <- merged_data[,-(1),drop=FALSE]
 merged_data$gender <- revalue(merged_data$gender, c("female"=1))
 merged_data$gender <- revalue(merged_data$gender, c("male"=0))
 merged_data$gender[merged_data$gender == ""] = 0.5
+merged_data$is_churn = as.factor(merged_data$is_churn)
+merged_data$gender = as.factor(merged_data$gender)
 merged_data$registration_init_time = as.numeric(Sys.Date() - as.Date(sprintf("%08d",merged_data$registration_init_time), origin="1970-01-01", format="%Y%m%d"))
 
 
@@ -33,11 +36,17 @@ test_inds = createDataPartition(y = 1:length(y), p = split_number, list = F)
 X_train = merged_data[-test_inds, ]
 X_test = merged_data[test_inds, ]
 
-
 model <- glm(is_churn ~ ., data = X_train, family = "binomial")
+
 
 # Predicting probabilities
 prob=predict(model,X_test,type="response")
+
+# Gathering predictions and calculating prediction error
+preds = round(prob)
+pred_error = mean(preds != X_test$is_churn)
+cat('The classification error is', pred_error, '\n')
+
 X_test$prob <- prob
 g <- roc(is_churn ~ prob, data = X_test)
 
@@ -46,5 +55,5 @@ plot(g, main='ROC')
 print(auc(g))
 
 # Training the model using cross_validation control
-train_control = trainControl(method="cv", number=5)
-model = train(is_churn ~ ., data=X_train, method="glm", family=binomial, trControl=train_control)
+kf = cv.glm(data=X_train, glmfit=model, K=folds)
+cat('The cross-validation estimate of prediction error is', kf$delta[1])
