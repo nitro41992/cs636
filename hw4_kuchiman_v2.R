@@ -16,7 +16,7 @@ setkey(members,"msno")
 
 # Join Data by "msno"
 merged_data = merge(train, members, by="msno")
-merged_data <- merged_data[,-(1),drop=FALSE]
+# merged_data <- merged_data[,-(1),drop=FALSE]
 
 # Converting gender column to a scalar. Replacing blank rows with 0.5
 merged_data$gender <- revalue(merged_data$gender, c("female"=1))
@@ -46,7 +46,7 @@ X_train = merged_data[-test_inds, ]
 X_test = merged_data[test_inds, ]
 
 # Fitting to the model
-model <- glm(is_churn ~ ., data = X_train, family = "binomial")
+model <- glm(is_churn ~ city+bd+gender+registered_via+registration_init_time, data = X_train, family = "binomial")
 
 
 # Predicting probabilities
